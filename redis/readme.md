@@ -16,6 +16,7 @@ docker-compose -f ./redis/docker-compose.yml up
 
 - Go to `http://localhost:8001` to access the Redis Insight.
 - Accept the necessary T&Cs.
+- Run this commnad to get the Redis Host running host in the container ``docker exec redisinsight getent hosts redis``
 - Click on **"I already have a database"**
 - Click on **"Connect to Redis database"**
 - Enter the following configuration and click on **"Add Redis Database"**:

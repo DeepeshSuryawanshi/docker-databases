@@ -1,60 +1,26 @@
-version: "3.9"
-
 services:
-  db:
-    image: postgres:17-alpine
-    container_name: Dev-postgres
+  postgres:
+    image: postgres:18.6
+    container_name: postgres-db
     restart: unless-stopped
 
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-main}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      TZ: ${TZ:-Asia/Kolkata}
-      PGTZ: ${TZ:-Asia/Kolkata}
+      POSTGRES_DB: main
+      POSTGRES_USER: postgress
+      POSTGRES_PASSWORD: postgress
 
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "5432:5432"
 
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-      # Optional: automatically install PostgreSQL extensions
-      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+      - main_postgres_data:/var/lib/postgresql
 
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-main}"
-        ]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U postgress -d main"]
+      interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 10s
-
-    networks:
-      - backend
-
-    # Prevent PostgreSQL from consuming excessive host resources
-    deploy:
-      resources:
-        limits:
-          cpus: "2.0"
-          memory: 1G
-        reservations:
-          cpus: "0.5"
-          memory: 512M
-
-    shm_size: "256mb"
-
+      retries: 5
 
 volumes:
-  postgres_data:
-    name: postgres_postgres_data
-
-
-networks:
-  backend:
-    name: dev_backend
-    driver: bridge
+  main_postgres_data:
+    name: main_postgres_data
